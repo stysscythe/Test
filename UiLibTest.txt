@@ -411,3 +411,5 @@ function lib.Window(title)
 	end
 	return Tabs;
 end
+
+return lib
