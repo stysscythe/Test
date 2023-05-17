@@ -1,0 +1,413 @@
+-- Gui to Lua
+-- Version: 3.2
+local lib = {}
+
+local Opened = false
+
+local tweenService = game:GetService("TweenService")
+local UIS = game:GetService("UserInputService")
+
+-- Instances:
+
+
+function Drag(target2)
+	local parent = target2
+	local dragToggle = nil
+	local dragSpeed = 0.25
+	local dragStart = nil
+	local startPos = nil
+
+	local function updateInput(input)
+		local delta = input.Position - dragStart
+		local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+			startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		game:GetService('TweenService'):Create(parent, TweenInfo.new(dragSpeed), {Position = position}):Play()
+	end
+
+	parent.InputBegan:Connect(function(input)
+		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
+			dragToggle = true
+			dragStart = input.Position
+			startPos = parent.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragToggle = false
+				end
+			end)
+		end
+	end)
+
+	UIS.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			if dragToggle then
+				updateInput(input)
+			end
+		end
+	end)
+end
+
+function lib.Window(title)
+	title = title or "Ui Test"
+	
+	local LibTest = Instance.new("ScreenGui")
+	local TopBar = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local Window = Instance.new("Frame")
+	local UICorner_2 = Instance.new("UICorner")
+	local TabFrames = Instance.new("Folder")
+	local DropShadowHolder = Instance.new("Frame")
+	local DropShadow = Instance.new("ImageLabel")
+	local TabHolder = Instance.new("Frame")
+	local UICorner_3 = Instance.new("UICorner")
+	local TabScroll = Instance.new("ScrollingFrame")
+	local UICorner_4 = Instance.new("UICorner")
+	local UIListLayout_2 = Instance.new("UIListLayout")
+	local UIPadding_2 = Instance.new("UIPadding")
+	local LibTitle = Instance.new("TextLabel")
+	local Close = Instance.new("TextButton")
+
+	--Properties:
+
+	LibTest.Name = "LibTest"
+	LibTest.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+	
+	UIS.InputBegan:Connect(function(KeyCode)
+		if KeyCode.KeyCode == Enum.KeyCode.RightAlt then
+			if Opened then
+				LibTest.Enabled = false
+				Opened = false
+			else
+				Opened = true
+				LibTest.Enabled = true
+			end
+		end
+	end)
+
+	TopBar.Name = "TopBar"
+	TopBar.Parent = LibTest
+	TopBar.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+	TopBar.Position = UDim2.new(0.287, 0, 0.261000007, -2)
+	TopBar.Size = UDim2.new(0, 610, 0, 44)
+	TopBar.ZIndex = 6
+	TopBar.ClipsDescendants = false
+	
+	Drag(TopBar)
+
+	UICorner.CornerRadius = UDim.new(0, 6)
+	UICorner.Parent = TopBar
+
+	Window.Name = "Window"
+	Window.Parent = TopBar
+	Window.BackgroundColor3 = Color3.fromRGB(43, 43, 43)
+	Window.Position = UDim2.new(0.0023747494, 0, -0.0136562698, 0)
+	Window.Size = UDim2.new(0, 608, 0, 382)
+	Window.ZIndex = 4
+
+	UICorner_2.CornerRadius = UDim.new(0, 6)
+	UICorner_2.Parent = Window
+
+	TabFrames.Name = "Content"
+	TabFrames.Parent = Window
+	
+	local Tabs = {}
+	
+	local first = true --from some other guy with a ui libary lmao
+	
+	function Tabs.CreateTab(TabTitle)
+		TabTitle = TabTitle or "Home"
+		local tabtext = TabTitle
+		local HomeTab = Instance.new("ScrollingFrame")
+		local UIListLayout = Instance.new("UIListLayout")
+		local UIPadding = Instance.new("UIPadding")
+		local Tab = Instance.new("TextButton")
+		
+			
+	    HomeTab.Name = tabtext
+		HomeTab.Parent = TabFrames
+		HomeTab.Active = true
+		HomeTab.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		HomeTab.Position = UDim2.new(0.243, 0,0.118, 0)
+		HomeTab.BackgroundTransparency = 1.000
+		HomeTab.Size = UDim2.new(0, 461, 0, 336)
+		HomeTab.ZIndex = 5
+		HomeTab.ClipsDescendants = true
+		HomeTab.ScrollBarImageTransparency = 1
+				
+		UIListLayout.Parent = HomeTab
+		UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+		UIListLayout.Padding = UDim.new(0, 12)
+
+		UIPadding.Parent = HomeTab
+		UIPadding.PaddingTop = UDim.new(0, 12)
+		
+		Tab.Name = "Tab"
+		Tab.Parent = TabScroll
+		Tab.Active = false
+		Tab.BackgroundColor3 = Color3.fromRGB(84, 84, 84)
+		Tab.BorderColor3 = Color3.fromRGB(138, 138, 138)
+		Tab.BorderSizePixel = 3
+		Tab.Position = UDim2.new(0.0405407473, 0, 0.0238805972, 0)
+		Tab.Selectable = false
+		Tab.Size = UDim2.new(0, 123, 0, 30)
+		Tab.ZIndex = 5
+		Tab.FontFace = Font.new([[rbxasset://fonts/families/Nunito.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+		Tab.Text = tabtext
+		Tab.TextColor3 = Color3.fromRGB(255, 255, 255)
+		Tab.TextSize = 29.000
+		Tab.TextWrapped = true
+		Tab.TextYAlignment = Enum.TextYAlignment.Center
+		
+		if first then
+			first = false
+			HomeTab.Visible = true
+			Tab.BackgroundTransparency = 0.7
+			Tab.TextColor3 = Color3.fromRGB(255, 255, 255)
+		else
+			HomeTab.Visible = false
+			Tab.BackgroundTransparency = 0.89
+			Tab.TextColor3 = Color3.fromRGB(199, 199, 199)
+		end
+		
+		Tab.MouseButton1Click:Connect(function()
+			for i,v in next, TabFrames:GetChildren() do
+				v.Visible = false
+			end
+			HomeTab.Visible = true
+
+			for i,v in next, TabScroll:GetChildren() do
+				if v:IsA("TextButton") then
+					game.TweenService:Create(v, TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+						BackgroundTransparency = 0.89
+					}):Play()
+					game.TweenService:Create(v, TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+						TextColor3 = Color3.fromRGB(199, 199, 199)
+					}):Play()
+				end
+			end
+			game.TweenService:Create(Tab, TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+				BackgroundTransparency = 0.7
+			}):Play()
+			game.TweenService:Create(Tab, TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+				TextColor3 = Color3.fromRGB(255, 255, 255)
+			}):Play()
+		end)
+		
+		local elements = {}
+		
+		function elements:Button(BtnText, callback)
+			BtnText = BtnText or "Button"
+			callback = callback or function() end
+			
+			local ButtonFrame = Instance.new("Frame")
+			local UIStroke = Instance.new("UIStroke")
+			local UICorner_5 = Instance.new("UICorner")
+			local ButtonLabel = Instance.new("TextLabel")
+			local CursorImage = Instance.new("ImageLabel")
+			local Clickable = Instance.new("TextButton")
+			
+			ButtonFrame.Name = "ButtonFrame"
+			ButtonFrame.Parent = HomeTab
+			ButtonFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+			ButtonFrame.Position = UDim2.new(0.178958789, 0, 0.0595238097, 0)
+			ButtonFrame.Size = UDim2.new(0, 326, 0, 38)
+			ButtonFrame.ZIndex = 5
+			ButtonFrame.BackgroundTransparency = 0.6
+			
+			UIStroke.Name = "UIStroke"
+			UIStroke.Parent = ButtonFrame
+			UIStroke.Thickness = 2.5
+			UIStroke.Color = Color3.fromRGB(86, 86, 86)
+			
+			ButtonLabel.Name = "ButtonLabel"
+			ButtonLabel.Parent = ButtonFrame
+			ButtonLabel.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+			ButtonLabel.BackgroundTransparency = 1.000
+			ButtonLabel.Position = UDim2.new(0.0357068926, 0, 0.0263157897, 0)
+			ButtonLabel.Size = UDim2.new(0, 282, 0, 37)
+			ButtonLabel.ZIndex = 5
+			ButtonLabel.FontFace = Font.new([[rbxasset://fonts/families/Nunito.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
+			ButtonLabel.Text = BtnText
+			ButtonLabel.TextColor3 = Color3.fromRGB(200,200,200)
+			ButtonLabel.TextSize = 36.000
+			ButtonLabel.TextWrapped = true
+			ButtonLabel.TextXAlignment = Enum.TextXAlignment.Left
+			ButtonLabel.TextYAlignment = Enum.TextYAlignment.Bottom
+
+			CursorImage.Name = "CursorImage"
+			CursorImage.Parent = ButtonFrame
+			CursorImage.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+			CursorImage.BackgroundTransparency = 1.000
+			CursorImage.Position = UDim2.new(0.870786548, 0, 0.0263157897, 0)
+			CursorImage.Size = UDim2.new(0, 37, 0, 37)
+			CursorImage.ZIndex = 5
+			CursorImage.Image = "rbxassetid://12971542582"
+			CursorImage.ImageColor3 = Color3.fromRGB(200,200,200)
+
+			Clickable.Name = "Clickable"
+			Clickable.Parent = ButtonFrame
+			Clickable.Active = false
+			Clickable.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+			Clickable.BackgroundTransparency = 1.000
+			Clickable.Position = UDim2.new(0.0357068777, 0, 0.0263157897, 0)
+			Clickable.Selectable = false
+			Clickable.Size = UDim2.new(0, 300, 0, 37)
+			Clickable.ZIndex = 9
+			Clickable.Font = Enum.Font.Unknown
+			Clickable.Text = ""
+			Clickable.TextColor3 = Color3.fromRGB(255, 255, 255)
+			Clickable.TextSize = 36.000
+			Clickable.TextWrapped = true
+			Clickable.TextXAlignment = Enum.TextXAlignment.Left
+			Clickable.TextYAlignment = Enum.TextYAlignment.Bottom
+			Clickable.MouseButton1Click:Connect(function()
+				callback()
+				ButtonFrame.BackgroundTransparency = 0
+				ButtonFrame.BackgroundColor3 = Color3.fromRGB(56, 56, 56)
+				ButtonLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+				UIStroke.Color = Color3.fromRGB(255, 255, 255)
+				CursorImage.ImageColor3 = Color3.fromRGB(255,255,255)
+				
+				local ClickSound = 	Instance.new("Sound")
+
+				ClickSound.Parent = Clickable
+				ClickSound.SoundId = "rbxassetid://552900451"
+				ClickSound.Volume = 2 
+				
+				ClickSound:Play()
+				
+				wait(0.2)
+				
+				game.TweenService:Create(ButtonFrame, TweenInfo.new(0.8, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+					BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+				}):Play()
+				
+				game.TweenService:Create(ButtonLabel, TweenInfo.new(0.8, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+					TextColor3 = Color3.fromRGB(200,200,200)
+				}):Play()
+				
+				game.TweenService:Create(UIStroke, TweenInfo.new(0.8, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+					Color = Color3.fromRGB(86, 86, 86)
+				}):Play()
+				
+				game.TweenService:Create(CursorImage, TweenInfo.new(0.8, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+					ImageColor3 = Color3.fromRGB(200,200,200)
+				}):Play()
+				
+				
+			end)	
+		end
+
+
+
+
+	DropShadowHolder.Name = "DropShadowHolder"
+	DropShadowHolder.Parent = Window
+	DropShadowHolder.BackgroundTransparency = 1.000
+	DropShadowHolder.BorderSizePixel = 0
+	DropShadowHolder.Size = UDim2.new(1, 0, 1, 0)
+	DropShadowHolder.ZIndex = 0
+
+	DropShadow.Name = "DropShadow"
+	DropShadow.Parent = DropShadowHolder
+	DropShadow.AnchorPoint = Vector2.new(0.5, 0.5)
+	DropShadow.BackgroundTransparency = 1.000
+	DropShadow.BorderSizePixel = 0
+	DropShadow.Position = UDim2.new(0.5, 0, 0.5, 0)
+	DropShadow.Size = UDim2.new(1, 47, 1, 47)
+	DropShadow.ZIndex = 0
+	DropShadow.Image = "rbxassetid://6014261993"
+	DropShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+	DropShadow.ImageTransparency = 0.500
+	DropShadow.ScaleType = Enum.ScaleType.Slice
+	DropShadow.SliceCenter = Rect.new(49, 49, 450, 450)
+
+	TabHolder.Name = "TabHolder"
+	TabHolder.Parent = Window
+	TabHolder.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+	TabHolder.Position = UDim2.new(0.005, -3, 0.089, 0)
+	TabHolder.Size = UDim2.new(0, 148, 0, 348)
+	TabHolder.ZIndex = 5
+
+	UICorner_3.CornerRadius = UDim.new(0, 6)
+	UICorner_3.Parent = TabHolder
+
+	TabScroll.Name = "TabScroll"
+	TabScroll.Parent = TabHolder
+	TabScroll.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+	TabScroll.BackgroundTransparency = 1.000
+	TabScroll.Position = UDim2.new(-0.00512282923, -1, 0.0370644741, 0)
+	TabScroll.Selectable = false
+	TabScroll.Size = UDim2.new(0, 157, 0, 335)
+	TabScroll.ZIndex = 5
+	TabScroll.CanvasSize = UDim2.new(0, 0, 1.5, 0)
+	TabScroll.ClipsDescendants = true
+	TabScroll.ScrollBarImageTransparency = 1
+		
+	UICorner_4.CornerRadius = UDim.new(0, 6)
+	UICorner_4.Parent = TabScroll
+
+	UIListLayout_2.Parent = TabScroll
+	UIListLayout_2.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout_2.Padding = UDim.new(0, 16)
+
+	UIPadding_2.Parent = TabScroll
+	UIPadding_2.PaddingRight = UDim.new(0, 5)
+	UIPadding_2.PaddingTop = UDim.new(0, 12)
+
+
+	LibTitle.Name = "LibTitle"
+	LibTitle.Parent = TopBar
+	LibTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	LibTitle.BackgroundTransparency = 1.000
+	LibTitle.Position = UDim2.new(0.0361842103, 0, 0, 0)
+	LibTitle.Size = UDim2.new(0, 421, 0, 44)
+	LibTitle.ZIndex = 7
+	LibTitle.FontFace = Font.new([[rbxassetid://12187365977]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+	LibTitle.Text = title
+	LibTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+	LibTitle.TextSize = 40.000
+	LibTitle.TextWrapped = true
+	LibTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+	Close.Name = "Close"
+	Close.Parent = TopBar
+	Close.Active = false
+	Close.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Close.BackgroundTransparency = 1.000
+	Close.Position = UDim2.new(0.907475293, 0, 0.0574163198, 0)
+	Close.Selectable = false
+	Close.Size = UDim2.new(0, 37, 0, 37)
+	Close.ZIndex = 7
+	Close.FontFace = Font.new([[rbxassetid://12187365977]], Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+	Close.Text = "X"
+	Close.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Close.TextScaled = true
+	Close.TextSize = 53.000
+	Close.TextWrapped = true
+	Close.MouseButton1Click:Connect(function()
+		if LibTest.Enabled == true then
+			local ClickSound = 	Instance.new("Sound")
+
+			ClickSound.Parent = Close
+			ClickSound.SoundId = "rbxassetid://8284260932"
+			ClickSound.Volume = 2
+
+			TopBar.ClipsDescendants = true 
+			wait(0.6)
+			tweenService:Create(TopBar, TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Position = UDim2.new(0.286585361, 0, 0.260598481, -40) }):Play()
+			wait(1)
+			ClickSound:Play()
+			tweenService:Create(TopBar, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Position = UDim2.new(0.286585361, 0, 3.999, 0) }):Play()
+			wait(0.89)
+			LibTest.Enabled = false
+		else
+			return nil	
+		end
+	end)
+
+		return elements;
+	end
+	return Tabs;
+end
